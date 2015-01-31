@@ -11,8 +11,8 @@
 <?php endforeach; ?>
 
 <ul class="nav nav-tabs">
-    <li class="active"><a href="#modules" data-toggle="tab"><?=$this->translate('Your Registered Modules'); ?></a></li>
-    <li><a href="#addrepo" data-toggle="tab"><?=$this->translate('Add a New Module'); ?></a></li>
+    <li class="active"><a href="#modules" data-toggle="tab"><?php echo $this->translate('Your Registered Modules'); ?></a></li>
+    <li><a href="#addrepo" data-toggle="tab"><?php echo $this->translate('Add a New Module'); ?></a></li>
 </ul>
 
 <div class="tab-content">
@@ -21,7 +21,7 @@
         $modules = $this->listModule(['user' => true]);
         if (empty($modules)) {
             ?>
-            <div class="alert alert-info alert-block"><?=$this->translate('You have not added any modules'); ?></div>
+            <div class="alert alert-info alert-block"><?php echo $this->translate('You have not added any modules'); ?></div>
             <?php
         }
         foreach ($modules as $module) {
