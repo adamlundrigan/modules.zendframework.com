@@ -1,7 +1,8 @@
 <?php
 return [
     'module_layouts' => [
-        'ZfcUser' => 'layout/layout-small-header.phtml',
+        'ZfcUser'  => 'layout/layout-small-header.phtml',
+        'User'     => 'layout/layout-small-header.phtml',
         'ZfModule' => 'layout/layout-small-header.phtml',
     ],
     'asset_manager' => [

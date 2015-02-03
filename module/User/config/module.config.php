@@ -16,9 +16,36 @@ return [
             __DIR__ . '/../view',
         ],
     ],
+    'router' => [
+        'routes' => [
+            'zfcuser' => [
+                'options' => [
+                    'route' => '/auth',
+                ],
+            ],
+            'scn-social-auth-user' => [
+                'options' => [
+                    'route' => '/auth',
+                    'defaults' => [
+                        'controller' => 'User\Controller\Index',
+                    ],
+                ],
+            ],
+            'user' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/user',
+                    'defaults' => [
+                        'controller' => 'User\Controller\Index',
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+        ],
+    ],
     'controllers' => [
         'invokables' => [
-            'User\Controller\Module' => 'User\Controller\ModuleController',
+            'User\Controller\Index' => 'User\Controller\IndexController',
         ],
     ],
     'view_helpers' => [

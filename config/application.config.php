@@ -5,13 +5,13 @@ return [
     'modules' => [
         'ZF\DevelopmentMode',
         'AssetManager',
+        'EdpModuleLayouts',
         'ZfcBase',
         'ZfcUser',
         'ScnSocialAuth',
         'EdpGithub',
         'Application',
         'User',
-        'EdpModuleLayouts',
         'ZfModule',
     ],
     'module_listener_options' => [
