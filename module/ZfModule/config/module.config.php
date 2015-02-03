@@ -24,49 +24,6 @@ return [
                     ],
                 ],
             ],
-            'zf-module'   => [
-                'type'          => 'Segment',
-                'options'       => [
-                    'route'    => '/module',
-                    'defaults' => [
-                        'controller' => Controller\IndexController::class,
-                        'action'     => 'index',
-                    ],
-                ],
-                'may_terminate' => true,
-                'child_routes'  => [
-                    'list'   => [
-                        'type'    => 'Segment',
-                        'options' => [
-                            'route'      => '/list[/:owner]',
-                            'constrains' => [
-                                'owner' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                            'defaults'   => [
-                                'action' => 'organization',
-                            ],
-                        ],
-                    ],
-                    'add'    => [
-                        'type'    => 'Literal',
-                        'options' => [
-                            'route'    => '/add',
-                            'defaults' => [
-                                'action' => 'add',
-                            ],
-                        ],
-                    ],
-                    'remove' => [
-                        'type'    => 'Literal',
-                        'options' => [
-                            'route'    => '/remove',
-                            'defaults' => [
-                                'action' => 'remove',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
         ],
     ],
     'view_manager' => [
