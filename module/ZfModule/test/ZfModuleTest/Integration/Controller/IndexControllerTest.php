@@ -18,29 +18,6 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->setApplicationConfig(Bootstrap::getConfig());
     }
 
-    public function testIndexActionCanBeAccessed()
-    {
-        $this->dispatch('/module');
-
-        $this->assertControllerName(Controller\IndexController::class);
-        $this->assertActionName('index');
-    }
-
-    public function testOrganizationActionCanBeAccessed()
-    {
-        $owner = 'foo';
-
-        $url = sprintf(
-            '/module/list/%s',
-            $owner
-        );
-
-        $this->dispatch($url);
-
-        $this->assertControllerName(Controller\IndexController::class);
-        $this->assertActionName('organization');
-    }
-
     public function testViewActionCanBeAccessed()
     {
         $vendor = 'foo';
