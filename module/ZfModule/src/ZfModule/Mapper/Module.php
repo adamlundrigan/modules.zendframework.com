@@ -87,12 +87,12 @@ class Module extends AbstractDbMapper implements ModuleInterface
         return $entity;
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     public function findByOwner($owner, $limit = null, $orderBy = null, $sort = 'ASC')
     {
         $select = $this->getSelect();
+        if ($owner) {
+            $select->where(['owner' => $owner]);
+        }
 
         if ($orderBy) {
             $select->order($orderBy . ' ' . $sort);
