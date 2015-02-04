@@ -1,0 +1,43 @@
+
+<div style="margin-bottom: 20px;">
+    <img style="float:left; height: 80px; padding-right: 10px;" src="<?php echo $this->zfcUserIdentity()->getPhotoUrl() ?>" alt="<?php echo $this->zfcUserDisplayName() ?>"/>
+    <h3 style="margin-bottom: 0px;">Hello, <?php echo $this->zfcUserDisplayName() ?>!</h3>
+    <p>We should fill this space with some useful information...</p>
+    <div class="clearfix"></div>
+</div>
+
+<?php foreach ($this->flashMessenger()->getMessages() as $message): ?>
+    <h3 class="zf-green"><?php echo $message ?></h3>
+<?php endforeach; ?>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#modules" data-toggle="tab"><?php echo $this->translate('Your Registered Modules'); ?></a></li>
+    <li><a href="#addrepo" data-toggle="tab"><?php echo $this->translate('Add a New Module'); ?></a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="modules">
+        <?php
+        $modules = $this->listModule(['user' => true]);
+        if (empty($modules)) {
+            ?>
+            <div class="alert alert-info alert-block"><?php echo $this->translate('You have not added any modules'); ?></div>
+            <?php
+        }
+        foreach ($modules as $module) {
+            echo $this->moduleView([
+                'owner' => $module->getOwner(),
+                'name' => $module->getName(),
+                'created_at' => $module->getCreatedAt(),
+                'url' => $module->getUrl(),
+                'photo_url' => $module->getPhotoUrl(),
+                'description' => $module->getDescription(),
+            ], 'remove');
+        }
+        ?>
+    </div>
+    <div class="tab-pane" id="addrepo">
+
+    </div>
+</div>
+

@@ -11,8 +11,8 @@ return [
         'ScnSocialAuth',
         'EdpGithub',
         'Application',
-        'User',
         'ZfModule',
+        'User',
     ],
     'module_listener_options' => [
         'config_glob_paths'    => [
