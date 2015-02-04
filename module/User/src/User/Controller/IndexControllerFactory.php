@@ -2,6 +2,10 @@
 
 namespace User\Controller;
 
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfModule\Mapper\Module as ModuleMapper;
+
 class IndexControllerFactory implements FactoryInterface
 {
     /**
@@ -10,6 +14,14 @@ class IndexControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $controllerManager)
     {
-        return new IndexController();
+        /* @var ServiceLocatorInterface $controllerManager */
+        $serviceManager = $controllerManager->getServiceLocator();
+
+        /* @var ModuleMapper $moduleMapper */
+        $moduleMapper = $serviceManager->get('zfmodule_mapper_module');
+
+        return new IndexController(
+            $moduleMapper
+        );
     }
 }

@@ -32,7 +32,7 @@ return [
                 ],
             ],
             'user' => [
-                'type' => 'Segment',
+                'type' => 'Literal',
                 'options' => [
                     'route' => '/user',
                     'defaults' => [
@@ -40,12 +40,54 @@ return [
                         'action'     => 'index',
                     ],
                 ],
+                'may_terminate' => true,
+                'child_routes'  => [
+                    'module' => [
+                        'type' => 'Literal',
+                        'options' => [
+                            'route' => '/module',
+                        ],
+                        'may_terminate' => false,
+                        'child_routes' => [
+                            'list' => [
+                                'type' => 'Literal',
+                                'options' => [
+                                    'route' => '/render-list',
+                                    'defaults'   => [
+                                        'action' => 'render-module-list',
+                                    ],
+                                ],
+                            ],
+                            'add' => [
+                                'type' => 'Literal',
+                                'options' => [
+                                    'route' => '/add',
+                                    'defaults'   => [
+                                        'action' => 'add',
+                                    ],
+                                ],
+                            ],
+                            'remove' => [
+                                'type' => 'Segment',
+                                'options' => [
+                                    'route' => '/:module_id/remove',
+                                    'constraints' => [
+                                        'module_id' => '[0-9]+',
+                                    ],
+                                    'defaults'   => [
+                                        'action' => 'remove',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ],
     ],
     'controllers' => [
-        'invokables' => [
-            'User\Controller\Index' => 'User\Controller\IndexController',
+        'factories' => [
+            'User\Controller\Index' => 'User\Controller\IndexControllerFactory',
         ],
     ],
     'view_helpers' => [

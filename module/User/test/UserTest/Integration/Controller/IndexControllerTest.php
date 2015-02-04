@@ -4,8 +4,14 @@ namespace UserTest\Integration\Controller;
 
 use ApplicationTest\Integration\Util\Bootstrap;
 use User\Entity\User as UserEntity;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Http\Response as HttpResponse;
+use Zend\Stdlib\Hydrator\ClassMethods;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use ZfModule\Entity\Module as ModuleEntity;
+use ZfModule\Mapper\Module as ModuleMapper;
+use ZfModule\View\Helper\TotalModules;
 
 class IndexControllerTest extends AbstractHttpControllerTestCase
 {
@@ -17,19 +23,14 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->setApplicationConfig(Bootstrap::getConfig());
         $this->getApplicationServiceLocator()->setAllowOverride(true);
 
-        $mockTotalModules = $this->getMockBuilder('ZfModule\View\Helper\TotalModules')
+        $mockTotalModules = $this->getMockBuilder(TotalModules::class)
                                  ->disableOriginalConstructor()
                                  ->getMock();
 
-        $mockListModule = $this->getMockBuilder('ZfModule\View\Helper\ListModule')
-                               ->disableOriginalConstructor()
-                               ->getMock();
-
         $this->viewHelperManager = $this->getApplicationServiceLocator()->get('ViewHelperManager');
         $this->viewHelperManager->setService('totalModules', $mockTotalModules);
-        $this->viewHelperManager->setService('listModule', $mockListModule);
 
-        $mockAuthService = $this->getMockBuilder('Zend\Authentication\AuthenticationService')
+        $mockAuthService = $this->getMockBuilder(AuthenticationService::class)
                                 ->disableOriginalConstructor()
                                 ->getMock();
         $mockAuthService->expects($this->any())
@@ -38,17 +39,32 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $mockAuthService->expects($this->any())
                         ->method('getIdentity')
                         ->will($this->returnValue(new UserEntity()));
-
         $this->getApplicationServiceLocator()->setService('zfcuser_auth_service', $mockAuthService);
         $this->viewHelperManager->get('zfcUserIdentity')->setAuthService($mockAuthService);
+
+        $mockMapper = $this->getMockBuilder(ModuleMapper::class)
+                           ->disableOriginalConstructor()
+                           ->getMock();
+        $this->getApplicationServiceLocator()->setService('zfmodule_mapper_module', $mockMapper);
     }
 
-    public function testIndexActionCanBeAccessed()
+    /**
+     * @group integration
+     */
+    public function testIndexActionRendersUserModuleList()
     {
-        $mockListModule = $this->viewHelperManager->get('listModule');
-        $mockListModule->expects($this->once())
-                       ->method('__invoke')
-                       ->will($this->returnValue([]));
+        $mockResultSet = new HydratingResultSet(new ClassMethods(false), new ModuleEntity());
+        $mockResultSet->initialize([[
+            'id' => 123,
+            'name' => 'FooModule',
+            'description' => 'some random module',
+            'url' => 'https://github.com/zendframework/modules.zendframework.com',
+        ]]);
+
+        $mockMapper = $this->getApplicationServiceLocator()->get('zfmodule_mapper_module');
+        $mockMapper->expects($this->once())
+                   ->method('findByOwner')
+                   ->willReturn($mockResultSet);
 
         $this->dispatch('/user');
 
@@ -56,5 +72,7 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->assertActionName('index');
         $this->assertTemplateName('user/index/index');
         $this->assertResponseStatusCode(HttpResponse::STATUS_CODE_200);
+        $this->assertContains('FooModule', $this->getResponse()->getContent());
+        $this->assertContains('/user/module/123/remove', $this->getResponse()->getContent());
     }
 }

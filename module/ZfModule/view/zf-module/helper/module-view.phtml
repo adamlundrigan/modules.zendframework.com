@@ -26,13 +26,13 @@
                 <div class="span1">
                     <br />
                     <?php if ($button == 'submit'): ?>
-                        <form action="<?php echo $this->url('zf-module/add') ?>" method="post">
+                        <form action="<?php echo $this->url('user/module/add') ?>" method="post">
                             <input type="hidden" name="owner" value="<?php echo $this->escapeHtmlAttr($module['owner']) ?>" />
                             <input type="hidden" name="repo" value="<?php echo $this->escapeHtmlAttr($module['name']) ?>" />
                             <input type="submit" class="btn btn-success"/>
                         </form>
                     <?php else: ?>
-                        <form action="<?php echo $this->url('zf-module/remove') ?>" method="post">
+                        <form action="<?php echo $this->url('user/module/remove', ['module_id' => $module['id']]) ?>" method="post">
                             <input type="hidden" name="owner" value="<?php echo $this->escapeHtmlAttr($module['owner']) ?>" />
                             <input type="hidden" name="repo" value="<?php echo $this->escapeHtmlAttr($module['name']) ?>" />
                             <input type="submit" value="Remove" class="btn btn-danger"/>
