@@ -173,7 +173,7 @@ class ModuleControllerTest extends AbstractHttpControllerTestCase
         $this->assertCount(1, $viewVariable);
         $this->assertSame($unregisteredModule, $viewVariable[0]);
     }
-    
+
     public function testIndexActionRendersErrorMessageWhenModuleFetchReturnsFalse()
     {
         $this->authenticatedAs(new User());
@@ -479,7 +479,7 @@ class ModuleControllerTest extends AbstractHttpControllerTestCase
         $this->assertCount(1, $viewVariable);
         $this->assertSame($unregisteredModule, $viewVariable[0]);
     }
-    
+
     public function testListActionRendersErrorMessageWhenModuleFetchReturnsFalse()
     {
         $this->authenticatedAs(new User());
@@ -490,7 +490,7 @@ class ModuleControllerTest extends AbstractHttpControllerTestCase
         ;
 
         $vendor = 'suzie';
-        
+
         $repositoryRetriever
             ->expects($this->once())
             ->method('getUserRepositories')

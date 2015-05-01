@@ -52,8 +52,7 @@ class RepositoryRetriever
     {
         try {
             return $this->githubClient->api('user')->repos($user, $params);
-        }
-        catch (RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return false;
         }
     }
@@ -151,8 +150,7 @@ class RepositoryRetriever
     {
         try {
             return $this->githubClient->api('current_user')->repos($params);
-        }
-        catch (RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return false;
         }
     }

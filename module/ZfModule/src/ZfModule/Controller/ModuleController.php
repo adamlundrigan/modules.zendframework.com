@@ -85,7 +85,7 @@ class ModuleController extends AbstractActionController
 
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
-        
+
         $currentUserRepositories = $this->repositoryRetriever->getAuthenticatedUserRepositories([
             'type' => 'all',
             'per_page' => 100,
@@ -112,7 +112,7 @@ class ModuleController extends AbstractActionController
         }
 
         $owner = $this->params()->fromRoute('owner', null);
-        
+
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
         $viewModel->setTemplate('zf-module/module/index.phtml');
@@ -128,7 +128,7 @@ class ModuleController extends AbstractActionController
 
             return $viewModel;
         }
-        
+
         $repositories = $this->unregisteredRepositories($userRepositories);
         $viewModel->setVariable('repositories', $repositories);
 
