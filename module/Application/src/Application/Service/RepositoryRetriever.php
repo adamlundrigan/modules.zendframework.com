@@ -46,11 +46,16 @@ class RepositoryRetriever
      * @param string $user
      * @param array $params
      *
-     * @return RepositoryCollection
+     * @return RepositoryCollection|bool
      */
     public function getUserRepositories($user, $params = [])
     {
-        return $this->githubClient->api('user')->repos($user, $params);
+        try {
+            return $this->githubClient->api('user')->repos($user, $params);
+        }
+        catch (RuntimeException $e) {
+            return false;
+        }
     }
 
     /**
@@ -140,10 +145,15 @@ class RepositoryRetriever
      *
      * @param array $params
      *
-     * @return RepositoryCollection
+     * @return RepositoryCollection|bool
      */
     public function getAuthenticatedUserRepositories($params = [])
     {
-        return $this->githubClient->api('current_user')->repos($params);
+        try {
+            return $this->githubClient->api('current_user')->repos($params);
+        }
+        catch (RuntimeException $e) {
+            return false;
+        }
     }
 }

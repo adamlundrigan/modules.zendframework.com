@@ -45,6 +45,22 @@ class RepositoryRetrieverTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(count($payload), $count);
     }
 
+    public function testGetUserRepositoriesReturnsFalseOnRemoteFailure()
+    {
+        $client = $this->getClientMock(
+            new Api\User(),
+            []
+        );
+        $client->expects($this->any())
+               ->method('api')
+               ->willThrowException(new Exception\RuntimeException());
+
+        $service = new RepositoryRetriever($client);
+
+        $repositories = $service->getUserRepositories('foo');
+        $this->assertFalse($repositories);
+    }
+
     public function testCanRetrieveUserRepositoryMetadata()
     {
         $payload = [
@@ -200,6 +216,22 @@ class RepositoryRetrieverTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals(count($payload), $count);
+    }
+
+    public function testGetAuthenticatedUserRepositoriesReturnsFalseOnRemoteFailure()
+    {
+        $client = $this->getClientMock(
+            new Api\CurrentUser(),
+            []
+        );
+        $client->expects($this->any())
+               ->method('api')
+               ->willThrowException(new Exception\RuntimeException());
+
+        $service = new RepositoryRetriever($client);
+
+        $repositories = $service->getAuthenticatedUserRepositories();
+        $this->assertFalse($repositories);
     }
 
     public function testRepositoryFileContentFails()
