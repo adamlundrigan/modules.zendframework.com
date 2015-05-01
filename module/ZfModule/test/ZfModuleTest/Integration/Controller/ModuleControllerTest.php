@@ -173,6 +173,46 @@ class ModuleControllerTest extends AbstractHttpControllerTestCase
         $this->assertCount(1, $viewVariable);
         $this->assertSame($unregisteredModule, $viewVariable[0]);
     }
+    
+    public function testIndexActionRendersErrorMessageWhenModuleFetchReturnsFalse()
+    {
+        $this->authenticatedAs(new User());
+
+        $repositoryRetriever = $this->getMockBuilder(RepositoryRetriever::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $repositoryRetriever
+            ->expects($this->once())
+            ->method('getAuthenticatedUserRepositories')
+            ->willReturn(false)
+        ;
+
+        $this->getApplicationServiceLocator()
+            ->setAllowOverride(true)
+            ->setService(
+                RepositoryRetriever::class,
+                $repositoryRetriever
+            )
+        ;
+
+        $this->dispatch('/module');
+
+        $this->assertMatchedRouteName('zf-module');
+
+        $this->assertControllerName(Controller\ModuleController::class);
+        $this->assertActionName('index');
+        $this->assertResponseStatusCode(Http\Response::STATUS_CODE_503);
+
+        $viewModel = $this->getApplication()->getMvcEvent()->getViewModel();
+
+        $this->assertTrue($viewModel->terminate());
+        $this->assertSame('zf-module/module/index', $viewModel->getTemplate());
+
+        $this->assertEquals(null, $viewModel->getVariable('repositories'));
+        $this->assertEquals('module_fetch_failed', $viewModel->getVariable('errorMessage'));
+    }
 
     public function testListActionRedirectsIfNotAuthenticated()
     {
@@ -438,6 +478,53 @@ class ModuleControllerTest extends AbstractHttpControllerTestCase
         $this->assertInternalType('array', $viewVariable);
         $this->assertCount(1, $viewVariable);
         $this->assertSame($unregisteredModule, $viewVariable[0]);
+    }
+    
+    public function testListActionRendersErrorMessageWhenModuleFetchReturnsFalse()
+    {
+        $this->authenticatedAs(new User());
+
+        $repositoryRetriever = $this->getMockBuilder(RepositoryRetriever::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $vendor = 'suzie';
+        
+        $repositoryRetriever
+            ->expects($this->once())
+            ->method('getUserRepositories')
+            ->willReturn(false)
+        ;
+
+        $this->getApplicationServiceLocator()
+            ->setAllowOverride(true)
+            ->setService(
+                RepositoryRetriever::class,
+                $repositoryRetriever
+            )
+        ;
+
+        $url = sprintf(
+            '/module/list/%s',
+            $vendor
+        );
+
+        $this->dispatch($url);
+
+        $this->assertMatchedRouteName('zf-module/list');
+
+        $this->assertControllerName(Controller\ModuleController::class);
+        $this->assertActionName('list');
+        $this->assertResponseStatusCode(Http\Response::STATUS_CODE_503);
+
+        $viewModel = $this->getApplication()->getMvcEvent()->getViewModel();
+
+        $this->assertTrue($viewModel->terminate());
+        $this->assertSame('zf-module/module/index.phtml', $viewModel->getTemplate());
+
+        $this->assertEquals(null, $viewModel->getVariable('repositories'));
+        $this->assertEquals('module_fetch_failed', $viewModel->getVariable('errorMessage'));
     }
 
     public function testAddActionRedirectsIfNotAuthenticated()

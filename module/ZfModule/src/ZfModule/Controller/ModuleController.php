@@ -83,17 +83,24 @@ class ModuleController extends AbstractActionController
             return $this->redirect()->toRoute('zfcuser/login');
         }
 
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        
         $currentUserRepositories = $this->repositoryRetriever->getAuthenticatedUserRepositories([
             'type' => 'all',
             'per_page' => 100,
             'sort' => 'updated',
             'direction' => 'desc',
         ]);
+        if ($currentUserRepositories === false) {
+            $this->getResponse()->setStatusCode(503);
+            $viewModel->setVariable('errorMessage', 'module_fetch_failed');
+
+            return $viewModel;
+        }
 
         $repositories = $this->unregisteredRepositories($currentUserRepositories);
-
-        $viewModel = new ViewModel(['repositories' => $repositories]);
-        $viewModel->setTerminal(true);
+        $viewModel->setVariable('repositories', $repositories);
 
         return $viewModel;
     }
@@ -105,18 +112,25 @@ class ModuleController extends AbstractActionController
         }
 
         $owner = $this->params()->fromRoute('owner', null);
+        
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        $viewModel->setTemplate('zf-module/module/index.phtml');
 
         $userRepositories = $this->repositoryRetriever->getUserRepositories($owner, [
             'per_page' => 100,
             'sort' => 'updated',
             'direction' => 'desc',
         ]);
+        if ($userRepositories === false) {
+            $this->getResponse()->setStatusCode(503);
+            $viewModel->setVariable('errorMessage', 'module_fetch_failed');
 
+            return $viewModel;
+        }
+        
         $repositories = $this->unregisteredRepositories($userRepositories);
-
-        $viewModel = new ViewModel(['repositories' => $repositories]);
-        $viewModel->setTerminal(true);
-        $viewModel->setTemplate('zf-module/module/index.phtml');
+        $viewModel->setVariable('repositories', $repositories);
 
         return $viewModel;
     }

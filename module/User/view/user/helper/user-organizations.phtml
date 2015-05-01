@@ -26,12 +26,18 @@
 
         <?php
         $jsTemplate = <<<'JAVASCRIPT'
-        $('#org-%s').on("show.bs.collapse", function () {
-            $('#org-content-%s').load("%s");
+        $('#org-%1$s').on("show.bs.collapse", function () {
+            $.ajax({
+                url: "%2$s",
+            }).done(function(data) {
+                $('#org-content-%1$s').html(data);
+            }).fail(function(xhr) {
+                $('#org-content-%1$s').html(xhr.responseText);
+            });
         });
 JAVASCRIPT;
 
-        $this->inlineScript()->appendScript(sprintf($jsTemplate, $org->login, $org->login, $this->url('zf-module/list', ['owner' => $org->login])));
+        $this->inlineScript()->appendScript(sprintf($jsTemplate, $org->login, $this->url('zf-module/list', ['owner' => $org->login])));
         ?>
     <?php endforeach; ?>
 </div>
